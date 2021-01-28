@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const app = express();
-const port = process.env.port || 8000;
+const PORT = process.env.port || 8000;
 
 const feedData = [];
 const resData = [];
@@ -16,9 +16,7 @@ const callTTS = async () => {
     .get(feedURL)
     .then((res) => feedData.push(res.data))
     .catch((error) => console.log(error));
-
   let a = 1;
-
   // for (let i = 0; i < 25; i++) {
   //   text =
   //     text +
@@ -29,7 +27,6 @@ const callTTS = async () => {
   //     " ";
   //   a++;
   // }
-
   for (let i = 0; i < 20; i++) {
     text =
       text +
@@ -66,4 +63,4 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.listen(port);
+app.listen(PORT);
