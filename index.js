@@ -62,4 +62,4 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.listen(process.env.port || 8000);
+app.listen(process.env.PORT || 8000);
