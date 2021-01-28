@@ -11,21 +11,31 @@ var text = "";
 
 const callTTS = async () => {
   const feedURL =
-    "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fvietnamnet.vn%2Frss%2Ftin-moi-nong.rss&api_key=stmncoubssixfmgyh1rut6onbopfgyac8b5ex4ea";
+    "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fvietnamnet.vn%2Frss%2Ftin-moi-nhat.rss&api_key=stmncoubssixfmgyh1rut6onbopfgyac8b5ex4ea&count=25";
   await axios
     .get(feedURL)
     .then((res) => feedData.push(res.data))
     .catch((error) => console.log(error));
 
   let a = 1;
-  for (let i = 0; i < 10; i++) {
+
+  // for (let i = 0; i < 25; i++) {
+  //   text =
+  //     text +
+  //     `Ở bản tin thứ ${a}, ` +
+  //     feedData[0].items[i].title +
+  //     ". " +
+  //     feedData[0].items[i].description +
+  //     " ";
+  //   a++;
+  // }
+
+  for (let i = 0; i < 20; i++) {
     text =
       text +
-      `Ở bản tin thứ ${a}, ` +
-      feedData[0].items[i].title +
-      ". " +
-      feedData[0].items[i].description +
-      " ";
+      `Ở bản tin thứ ${a} ` +
+      feedData[0].items[i].title + " " +
+      feedData[0].items[i].description + " ";
     a++;
   }
 
@@ -47,7 +57,7 @@ const callTTS = async () => {
 app.get("/api/tts", (req, res) => {
   callTTS()
     .then(() => {
-      res.json(resData);
+      res.json(resData[0].async);
     })
     .then((error) => console.log(error));
 });
