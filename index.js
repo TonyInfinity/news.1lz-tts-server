@@ -40,7 +40,7 @@ const callTTS = async () => {
     url: "https://api.fpt.ai/hmi/tts/v5",
     headers: {
       "api-key": process.env.API_KEY,
-      "speed": "0",
+      "speed": "-1",
       "voice": "banmai",
     },
     data: text,
