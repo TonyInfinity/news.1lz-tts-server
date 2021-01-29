@@ -2,11 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+var CronJob = require("cron").CronJob;
 const app = express();
 
 const feedData = [];
 const resData = [];
 var text = "";
+var audio = "";
 
 const callTTS = async () => {
   const feedURL =
@@ -16,22 +18,15 @@ const callTTS = async () => {
     .then((res) => feedData.push(res.data))
     .catch((error) => console.log(error));
   let a = 1;
-  // for (let i = 0; i < 25; i++) {
-  //   text =
-  //     text +
-  //     `Ở bản tin thứ ${a}, ` +
-  //     feedData[0].items[i].title +
-  //     ". " +
-  //     feedData[0].items[i].description +
-  //     " ";
-  //   a++;
-  // }
+
   for (let i = 0; i < 20; i++) {
     text =
       text +
       `Ở bản tin thứ ${a} ` +
-      feedData[0].items[i].title + " " +
-      feedData[0].items[i].description + " ";
+      feedData[0].items[i].title +
+      " " +
+      feedData[0].items[i].description +
+      " ";
     a++;
   }
 
@@ -40,8 +35,8 @@ const callTTS = async () => {
     url: "https://api.fpt.ai/hmi/tts/v5",
     headers: {
       "api-key": process.env.API_KEY,
-      "speed": "-1",
-      "voice": "banmai",
+      speed: "-0.5",
+      voice: "banmai",
     },
     data: text,
   };
@@ -50,16 +45,31 @@ const callTTS = async () => {
     .catch((error) => console.log(error));
 };
 
+var job = new CronJob(
+  "0 5 * * *",
+  () => {
+    callTTS()
+      .then(() => (audio = resData[0].async))
+      .then((error) => console.log(error));
+    console.log("CRON job ran successfully");
+  },
+  null,
+  false,
+  "Asia/Ho_Chi_Minh"
+);
+
+// app.get("/api/tts", (req, res) => {
+//   callTTS()
+//     .then(() => (audio = resData[0].async))
+//     .then((error) => console.log(error));
+//   res.status(200);
+// });
+
 app.get("/api/tts", (req, res) => {
-  callTTS()
-    .then(() => {
-      res.json(resData[0].async);
-    })
-    .then((error) => console.log(error));
+  res.redirect(audio);
 });
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-app.listen(process.env.PORT || 8000);
+app.listen(process.env.PORT || 8000, () => job.start());
