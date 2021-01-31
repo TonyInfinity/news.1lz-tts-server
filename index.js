@@ -12,13 +12,13 @@ var audio = "";
 
 const callTTS = async () => {
   const feedURL =
-    "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fvietnamnet.vn%2Frss%2Ftin-moi-nhat.rss&api_key=stmncoubssixfmgyh1rut6onbopfgyac8b5ex4ea&count=25";
+    `https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fvietnamnet.vn%2Frss%2Ftin-moi-nhat.rss&api_key=${process.env.FEED_API_KEY}&count=25`;
   await axios
     .get(feedURL)
     .then((res) => feedData.push(res.data))
     .catch((error) => console.log(error));
-  let a = 1;
 
+  let a = 1;
   for (let i = 0; i < 20; i++) {
     text =
       text +
@@ -34,7 +34,7 @@ const callTTS = async () => {
     method: "post",
     url: "https://api.fpt.ai/hmi/tts/v5",
     headers: {
-      "api-key": process.env.API_KEY,
+      "api-key": process.env.TTS_API_KEY,
       speed: "-0.5",
       voice: "banmai",
     },
@@ -46,7 +46,7 @@ const callTTS = async () => {
 };
 
 var job = new CronJob(
-  "0 5 * * *",
+  "5 5 * * *",
   () => {
     callTTS()
       .then(() => (audio = resData[0].async))
